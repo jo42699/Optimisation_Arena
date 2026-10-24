@@ -82,6 +82,8 @@ For a resolution of 80, `surface.x` and `surface.y` have 80 values and `surface.
 
 `best_score` ranks finite eligible runs by lowest objective. `runtime` ranks by measured runtime and explicitly prioritises speed. `balanced` uses a deterministic 60% normalised objective, 30% normalised runtime and 10% reliability penalty. Runtime is machine-dependent, and one trial does not establish statistical reliability.
 
+Each result separates `execution_status` (`completed`, `early_stopped` or `failed`), `optimization_status` (`improved`, `target_attained`, `no_improvement` or `failed`), `target_attained`, and `stagnation_observed`. The overall summary reports completed, failed, stagnated, optimisation-successful and target-attaining algorithms independently; `stalled_or_failed` is retained as a compatibility aggregate.
+
 ## OpenAI insights
 
 Insights send a compact summary of measured metrics, not the full landscape or trajectories. The backend asks the official OpenAI SDK for structured output, validates the returned structure with Pydantic, and keeps the deterministic winner authoritative. Disabled, missing-key, timeout and malformed-response cases return a structured `disabled`, `unavailable` or `failed` result in the same experiment report without invalidating the numerical report. The separate insights endpoint remains available for refreshes. AI text is treated as untrusted data and cannot execute code or change parameters.

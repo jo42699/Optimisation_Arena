@@ -13,7 +13,7 @@ from app.schemas import ExperimentRequest, GeneticAlgorithmParameters, GradientD
 
 from .landscape_generator import generate_landscape
 from .ai_insights import generate_insights
-from .report_builder import build_report
+from .report_builder import build_report, validate_report
 
 REPORT_STORE: dict[str, dict[str, Any]] = {}
 INSIGHT_STORE: dict[str, dict[str, Any]] = {}
@@ -86,8 +86,13 @@ def run_experiment(request: ExperimentRequest, settings) -> dict[str, Any]:
     report = build_report(experiment_id=experiment_id, created_at=created_at, request=request, problem=problem, bounds=bounds, landscape=landscape, results=selected_results, trial_results=trial_results, total_runtime_ms=(time.perf_counter() - started) * 1000)
     # AI is optional: without a key this returns a structured unavailable/disabled
     # result immediately; with a configured key it enriches this same report.
+    ai_started = time.perf_counter()
     report["ai_insights"] = generate_insights(report, settings)
+    report["metadata"]["ai_generation_duration_ms"] = (time.perf_counter() - ai_started) * 1000
+    if report["ai_insights"].get("status") in {"failed", "unavailable", "disabled"}:
+        report["diagnostics"]["warnings"].append(f"AI insights status: {report['ai_insights']['status']}.")
     report["config"]["total_runtime_ms"] = (time.perf_counter() - started) * 1000
+    validate_report(report)
     with STORE_LOCK:
         REPORT_STORE[experiment_id] = report
         INSIGHT_STORE[experiment_id] = report["ai_insights"]

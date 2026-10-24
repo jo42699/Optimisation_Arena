@@ -52,6 +52,8 @@ class GeneticAlgorithmParameters(BaseModel):
     def validate_elites(self) -> "GeneticAlgorithmParameters":
         if self.elite_count >= self.population_size:
             raise ValueError("elite_count must be smaller than population_size")
+        if self.tournament_size > self.population_size:
+            raise ValueError("tournament_size cannot exceed population_size")
         return self
 
 

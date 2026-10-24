@@ -1,7 +1,9 @@
 import numpy as np
+import pytest
 
 from app.algorithms import run_algorithm
 from app.problems import get_problem
+from app.schemas import GeneticAlgorithmParameters
 
 
 def run(name, seed=7):
@@ -31,3 +33,8 @@ def test_stochastic_algorithms_are_reproducible():
 def test_algorithm_changes_from_non_optimal_start():
     result = run("gradient_descent")
     assert result.best_position != [3.5, -2.5]
+
+
+def test_genetic_algorithm_rejects_oversized_tournament():
+    with pytest.raises(ValueError):
+        GeneticAlgorithmParameters(population_size=4, tournament_size=5)
