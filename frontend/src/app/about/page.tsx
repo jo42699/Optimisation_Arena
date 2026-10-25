@@ -1,0 +1,3 @@
+import Link from "next/link";
+import { Header } from "@/components/layout/Header";
+export default function AboutPage() { return <><Header/><main className="mx-auto max-w-3xl px-4 py-12"><section className="card p-7"><p className="mb-2 text-xs uppercase tracking-[.2em] text-cyan">About</p><h1 className="mb-4 text-3xl font-bold">A transparent laboratory for optimisation</h1><p className="muted mb-6">The dashboard helps compare gradient-based, stochastic and population-based search on canonical two-dimensional benchmark functions. It keeps the numerical evidence visible so recommendations can be inspected rather than treated as magic.</p><Link className="rounded-lg bg-electric px-4 py-2 text-sm font-semibold" href="/">Back to dashboard</Link></section></main></>; }

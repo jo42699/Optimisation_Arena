@@ -1,0 +1,12 @@
+"use client";
+import { useExperiment } from "@/context/ExperimentContext";
+import { equationHtml } from "@/lib/equation";
+
+export function Sidebar() {
+  const { report, functions, selectedFunction, view, showPaths, showStarts, showOptima, dispatch } = useExperiment();
+  const problem = report?.problem || functions.find((item) => item.identifier === selectedFunction);
+  return <aside className="space-y-4">
+    <section className="card p-4"><h2 className="mb-4 text-base font-semibold">Visualisation Settings</h2><label className="label">View Type<select className="input mt-1" value={view} onChange={(e) => dispatch({ type: "set_view", view: e.target.value as typeof view })}><option value="surface">3D Surface + Paths</option><option value="contour">Contour Plot (2D)</option><option value="paths">Algorithm Paths Only</option><option value="heatmap">Heatmap</option></select></label><div className="mt-4 space-y-3">{([['showPaths', 'Show Algorithm Paths', showPaths], ['showStarts', 'Show Start Points', showStarts], ['showOptima', 'Show Global Minimum', showOptima]] as const).map(([key, label, value]) => <label key={key} className="flex cursor-pointer items-center justify-between text-sm text-blue-100">{label}<input type="checkbox" checked={value} onChange={(e) => dispatch({ type: "set_flag", flag: key, value: e.target.checked })} className="h-4 w-4 accent-electric"/></label>)}</div></section>
+    <section className="card p-4"><h2 className="mb-4 text-base font-semibold">Function Information</h2>{problem ? <><div className="rounded-lg border border-line bg-[#06162a] p-3"><h3 className="font-semibold">{problem.name} Function</h3><div className="mt-2 text-sm" dangerouslySetInnerHTML={{ __html: equationHtml(problem.equation_latex) }}/></div><dl className="mt-4 space-y-3 text-sm"><div className="flex justify-between gap-4"><dt className="muted">Dimension</dt><dd>{problem.dimension}</dd></div><div className="flex justify-between gap-4"><dt className="muted">Minimum value</dt><dd>{problem.global_minimum_value}</dd></div><div><dt className="mb-1 muted">Known global minima</dt><dd className="space-y-1">{problem.global_minima.map((minimum, index) => <div key={index} className="text-blue-100">({minimum.position.join(", ")})</div>)}</dd></div><div><dt className="mb-1 muted">Search bounds</dt><dd>x [{problem.bounds.x.join(", ")}] · y [{problem.bounds.y.join(", ")}]</dd></div></dl></> : <p className="text-sm muted">Loading function information…</p>}</section>
+  </aside>;
+}

@@ -1,0 +1,3 @@
+import Link from "next/link";
+import { Header } from "@/components/layout/Header";
+export default function ExperimentsPage() { return <><Header/><main className="mx-auto max-w-3xl px-4 py-12"><section className="card p-7"><p className="mb-2 text-xs uppercase tracking-[.2em] text-cyan">Experiment history</p><h1 className="mb-3 text-2xl font-bold">Reports are available by experiment ID</h1><p className="muted mb-6">The backend intentionally uses a bounded in-memory store and does not expose a history listing. Use the dashboard to run a new experiment, then retrieve its report while the backend process is running.</p><Link className="rounded-lg bg-electric px-4 py-2 text-sm font-semibold" href="/">Back to dashboard</Link></section></main></>; }
