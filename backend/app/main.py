@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app import __version__
-from app.api import algorithms, experiments, functions, health, insights
+from app.api import algorithms, experiments, functions, health, insights, model
 from app.config import get_settings
 
 settings = get_settings()
@@ -13,3 +13,4 @@ app.include_router(functions.router)
 app.include_router(algorithms.router)
 app.include_router(experiments.router)
 app.include_router(insights.router)
+app.include_router(model.router)

@@ -9,6 +9,7 @@ import { PlotPanel } from "@/components/visualizations/PlotPanel";
 import { ConvergencePanel } from "@/components/results/ConvergencePanel";
 import { ResultsPanel } from "@/components/results/ResultsPanel";
 import { InsightsPanel } from "@/components/insights/InsightsPanel";
+import { IntelligentSelector } from "@/components/ml/IntelligentSelector";
 
 export function Dashboard() {
   const { report, status, error, view, showPaths, showStarts, showOptima, frame, resetAnimation } = useExperiment();
@@ -20,6 +21,7 @@ export function Dashboard() {
       <div className="min-w-0 space-y-3">{report ? <><PlotPanel report={report} view={view} frame={frame} showPaths={showPaths} showStarts={showStarts} showOptima={showOptima} onReset={resetAnimation}/><div className="card overflow-hidden"><AnimationControls/></div><div className="hidden rounded-md border border-border-panel bg-input-bg p-3 text-xs muted lg:block">Experiment {report.experiment_id} · {report.results.length} algorithms · {report.config.total_runtime_ms.toFixed(0)} ms total runtime</div></> : <EmptyVisualisation/>}</div>
       <Sidebar/>
     </div>
+    <IntelligentSelector/>
     {report && <div className="analytics-grid"><ConvergencePanel/><ResultsPanel/><InsightsPanel/></div>}
   </div>;
 }

@@ -106,3 +106,21 @@ class ExperimentRequest(BaseModel):
 class InsightRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     force_refresh: bool = False
+
+
+class AlgorithmPredictionRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    function: str
+    dimensions: int = Field(ge=1, le=1000)
+    budget: int = Field(ge=1, le=500000)
+
+    @field_validator("function")
+    @classmethod
+    def normalize_prediction_function(cls, value: str) -> str:
+        return value.strip().lower()
+
+
+class TrainModelRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    collect: bool = False
+    force: bool = False

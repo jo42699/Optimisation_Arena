@@ -46,7 +46,7 @@ export interface AIInsights {
 }
 export interface Report {
   schema_version: string; experiment_id: string; status: string; execution_status?: string; created_at: string;
-  config: { function: string; algorithms: string[]; iterations: number; seed: number; starting_point: [number, number] | null; bounds: Bounds; parameters: Record<string, Record<string, number>>; landscape_resolution: number; repeated_trials: number; include_population_snapshots: boolean; effective_seeds: Record<string, number>; total_runtime_ms: number };
+  config: { function: string; algorithms: string[]; iterations: number; max_evaluations?: number | null; seed: number; starting_point: [number, number] | null; bounds: Bounds; parameters: Record<string, Record<string, number>>; landscape_resolution: number; repeated_trials: number; include_population_snapshots: boolean; effective_seeds: Record<string, number>; total_runtime_ms: number };
   problem: FunctionMetadata; landscape: Landscape; results: ResultRow[]; animation: { algorithms: Record<string, Trajectory> };
   convergence: { series: ConvergenceSeries[]; note: string }; comparison: Comparison;
   diagnostics: Record<string, unknown>; overall_summary: Record<string, unknown>; ai_insights: AIInsights | null;
@@ -55,4 +55,26 @@ export interface Report {
 export interface FormState {
   iterations: number; seed: number; startingPoint: [number, number] | null; bounds: Bounds;
   parameters: Record<string, Record<string, number>>; resolution: number; rankingMetric: RankingMetric; repeatedTrials: number;
+}
+
+export interface DecisionPathCondition { feature: string; operator: string; threshold: number; observed_value: number; condition: string }
+export interface DecisionPath {
+  available: boolean; conditions: DecisionPathCondition[]; leaf_node: number;
+  leaf_sample_count: number; leaf_class_distribution: Record<string, number>;
+  predicted_class: string; source: string;
+}
+export interface ModelEvaluation {
+  evaluation_status: string; held_out_accuracy?: number | null; held_out_balanced_accuracy?: number | null;
+  baseline_accuracy?: number | null; per_class?: Record<string, { precision: number; recall: number; f1: number; support: number }>;
+  confusion_matrix?: number[][] | null; limitations?: string[];
+}
+export interface ModelStatus {
+  status: string; model_version: string | null; training_status: string;
+  metadata: Record<string, unknown> | null; limitations: string[];
+}
+export interface AlgorithmPrediction {
+  status: string; recommended_algorithm: string; recommended_display_name: string;
+  model_scores: Record<string, number>; scores_are_leaf_class_frequencies: boolean;
+  input: { function: string; dimensions: number; budget: number }; model_version: string | null;
+  training_status: string; decision_path: DecisionPath; model_evaluation?: ModelEvaluation | null; limitations: string[];
 }

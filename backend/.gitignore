@@ -6,3 +6,7 @@ __pycache__/
 .mypy_cache/
 *.log
 experiment_data/
+data/*.jsonl
+data/*.joblib
+data/*_metadata.json
+data/*.tmp

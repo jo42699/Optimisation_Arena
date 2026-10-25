@@ -1,6 +1,7 @@
-import type { AIInsights, AlgorithmMetadata, FunctionMetadata, Report } from "@/types/experiment";
+import type { AIInsights, AlgorithmMetadata, AlgorithmPrediction, FunctionMetadata, ModelStatus, Report } from "@/types/experiment";
 
-export interface ExperimentRequest { function: string; algorithms: string[]; iterations: number; seed: number; starting_point?: [number, number]; bounds: { x: [number, number]; y: [number, number] }; parameters: Record<string, Record<string, number>>; landscape: { resolution: number }; comparison: { ranking_metric: string }; repeated_trials: number; include_population_snapshots: boolean }
+export interface ExperimentRequest { function: string; algorithms: string[]; iterations: number; max_evaluations?: number; seed: number; starting_point?: [number, number]; bounds: { x: [number, number]; y: [number, number] }; parameters: Record<string, Record<string, number>>; landscape: { resolution: number }; comparison: { ranking_metric: string }; repeated_trials: number; include_population_snapshots: boolean }
+export interface AlgorithmPredictionRequest { function: string; dimensions: number; budget: number }
 const baseUrl = (process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8001").replace(/\/$/, "");
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${baseUrl}${path}`, { ...init, headers: { "Content-Type": "application/json", ...(init?.headers || {}) }, signal: AbortSignal.timeout(120000) });
@@ -16,4 +17,11 @@ export const api = {
   report: (id: string) => request<Report>(`/api/experiments/${encodeURIComponent(id)}`),
   insights: (id: string) => request<AIInsights>(`/api/experiments/${encodeURIComponent(id)}/insights`),
   generateInsights: (id: string) => request<AIInsights>(`/api/experiments/${encodeURIComponent(id)}/insights`, { method: "POST", body: JSON.stringify({ force_refresh: true }) }),
+  modelStatus: () => request<ModelStatus>("/api/model/status"),
+  predictAlgorithm: (payload: AlgorithmPredictionRequest) => request<AlgorithmPrediction>("/api/predict-algorithm", { method: "POST", body: JSON.stringify(payload) }),
+  trainModel: (collect = false) => request<{
+    status: string;
+    collection: { experiments_collected: number; failures: string[] } | null;
+    training: Record<string, unknown>;
+  }>("/api/model/train", { method: "POST", body: JSON.stringify({ collect, force: true }) }),
 };

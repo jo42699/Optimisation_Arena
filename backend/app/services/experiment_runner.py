@@ -13,6 +13,7 @@ from app.schemas import ExperimentRequest, GeneticAlgorithmParameters, GradientD
 
 from .landscape_generator import generate_landscape
 from .ai_insights import generate_insights
+from .ml_data import append_report
 from .report_builder import build_report, validate_report
 
 REPORT_STORE: dict[str, dict[str, Any]] = {}
@@ -32,7 +33,7 @@ def _bounds_for_request(request: ExperimentRequest, problem) -> dict[str, tuple[
     return {"x": problem.default_bounds, "y": problem.default_bounds}
 
 
-def run_experiment(request: ExperimentRequest, settings) -> dict[str, Any]:
+def run_experiment(request: ExperimentRequest, settings, *, generate_ai: bool = True) -> dict[str, Any]:
     problem = get_problem(request.function)
     supported = {"gradient_descent", "simulated_annealing", "genetic_algorithm"}
     unknown = [name for name in request.algorithms if name not in supported]
@@ -87,12 +88,13 @@ def run_experiment(request: ExperimentRequest, settings) -> dict[str, Any]:
     # AI is optional: without a key this returns a structured unavailable/disabled
     # result immediately; with a configured key it enriches this same report.
     ai_started = time.perf_counter()
-    report["ai_insights"] = generate_insights(report, settings)
+    report["ai_insights"] = generate_insights(report, settings) if generate_ai else {"status": "disabled", "experiment_id": experiment_id, "message": "AI generation was skipped for a training-data collection run.", "metrics_reference": {"winner": report["comparison"]["winner"]}}
     report["metadata"]["ai_generation_duration_ms"] = (time.perf_counter() - ai_started) * 1000
     if report["ai_insights"].get("status") in {"failed", "unavailable", "disabled"}:
         report["diagnostics"]["warnings"].append(f"AI insights status: {report['ai_insights']['status']}.")
     report["config"]["total_runtime_ms"] = (time.perf_counter() - started) * 1000
     validate_report(report)
+    append_report(report, settings)
     with STORE_LOCK:
         REPORT_STORE[experiment_id] = report
         INSIGHT_STORE[experiment_id] = report["ai_insights"]
