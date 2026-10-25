@@ -21,7 +21,7 @@ type Action =
   | { type: "experiment_success"; report: Report }
   | { type: "experiment_error"; error: string }
   | { type: "set_view"; view: ViewType } | { type: "set_flag"; flag: "showPaths" | "showStarts" | "showOptima"; value: boolean }
-  | { type: "set_frame"; frame: number } | { type: "set_playing"; playing: boolean } | { type: "set_speed"; speed: number }
+  | { type: "set_frame"; frame: number } | { type: "advance_frame"; frame: number } | { type: "set_playing"; playing: boolean } | { type: "set_speed"; speed: number }
   | { type: "insights_start" } | { type: "insights_success"; insights: AIInsights } | { type: "insights_error"; error: string }
   | { type: "model_status_success"; modelStatus: ModelStatus } | { type: "model_status_error"; error: string }
   | { type: "prediction_start" } | { type: "prediction_success"; prediction: AlgorithmPrediction } | { type: "prediction_clear" } | { type: "prediction_error"; error: string };
@@ -40,6 +40,7 @@ function reducer(state: State, action: Action): State {
     case "set_view": return { ...state, view: action.view };
     case "set_flag": return { ...state, [action.flag]: action.value };
     case "set_frame": return { ...state, frame: action.frame, playing: false };
+    case "advance_frame": return { ...state, frame: action.frame };
     case "set_playing": return { ...state, playing: action.playing };
     case "set_speed": return { ...state, speed: action.speed };
     case "insights_start": return { ...state, insightsStatus: "loading", error: null };
