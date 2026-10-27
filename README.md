@@ -224,3 +224,6 @@ Possible extensions include more benchmark functions, additional optimisation al
 ## Project summary
 
 **Optimisation Arena is an interactive mathematical optimisation platform that compares algorithms on benchmark functions and aims to use historical experiment data to train an explainable decision tree that recommends algorithms and verifies those predictions through experiments.**
+
+
+
