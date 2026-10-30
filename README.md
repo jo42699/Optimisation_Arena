@@ -3,9 +3,12 @@
 Optimisation Arena is a web-based application for exploring and comparing mathematical optimisation algorithms. It runs algorithms against benchmark functions, visualises their search behaviour through interactive 3D plots and convergence graphs, and aims to use historical experiment data to predict which algorithm is most suitable for a given problem.
 
 **Hackathon:** OxHack 2026  
-**Target prize category:** HRT — Best Use of Data for Predictions and Decision Making
 
-> **Project status:** The core dashboard, benchmark functions, optimisation algorithms, experiment workflow and Plotly visualisations have been described as implemented. Verify the current repository to confirm whether the decision-tree training and prediction workflow is complete.
+
+<p align="center">
+  <img src="images/page3.png" width="30%">
+ 
+</p>
 
 ## Features
 
