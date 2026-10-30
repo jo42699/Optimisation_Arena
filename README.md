@@ -6,7 +6,7 @@ Optimisation Arena is a web-based application for exploring and comparing mathem
 
 
 <p align="center">
-  <img src="images/page3.png" width="30%">
+  <img src="images/page3.png" width="90%">
  
 </p>
 
